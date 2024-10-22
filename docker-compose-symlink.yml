@@ -1,0 +1,35 @@
+services:
+  web:
+    image: martinhelmich/typo3:12.4
+    container_name: rovema_typo3_web
+    ports:
+      - "84:80"
+    volumes:
+      - ./typo3/fileadmin:/var/www/html/fileadmin
+      - ./typo3/typo3conf:/var/www/html/typo3conf
+      #- ./typo3/typo3:/var/www/html/typo3
+      #- ./typo3/uploads:/var/www/html/uploads
+      #- ./typo3/public:/var/www/html/public
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: rovema_typo3_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: typo3
+      MYSQL_USER: typo3
+      MYSQL_PASSWORD: typo3
+    volumes:
+      - db_data:/var/lib/mysql
+  
+  adminer:
+    image: adminer
+    container_name: rovema_typo3_adminer
+    restart: always
+    ports:
+      - 8084:8080
+
+volumes:
+  db_data:

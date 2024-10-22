@@ -1,0 +1,39 @@
+services:
+  nginx:
+    container_name: typo3_v12_nginx
+    build: ./docker/nginx
+    command: nginx -g "daemon off;"
+    links:
+      - php
+    ports:
+      - "81:80"
+    volumes:
+      - ./code:/var/www/html
+
+  php:
+    build: ./docker/php
+    container_name: typo3_v12_php
+    volumes:
+      - ./code:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: typo3_v12_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: typo3
+      MYSQL_USER: typo3
+      MYSQL_PASSWORD: typo3
+    volumes:
+      - db_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    container_name: typo3_v12_adminer
+    ports:
+      - 8081:8080
+
+volumes:
+  db_data:
